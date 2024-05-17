@@ -7,7 +7,7 @@ on:
 permissions: read-all
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     permissions:
@@ -37,3 +37,8 @@ jobs:
         uses: actions/attest-build-provenance@v1
         with:
           subject-path: 'sample-project/dist/sample-project-*-*'
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: sample-project
+          path: sample-project/dist/*
