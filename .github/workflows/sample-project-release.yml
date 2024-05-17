@@ -1,0 +1,58 @@
+name: Generate Atetstation for sample-project
+on:
+  push:
+    branches:
+      - "*"
+
+permissions: read-all
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: "~> v1"
+          args: release --clean --snapshot
+          workdir: sample-project
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'sample-project/dist/sample-project-linux-amd64'
+
+  # run: 
+  #   runs-on: ubuntu-latest
+  #   needs: provenance
+  #   steps:
+  #     - name: Download encoded artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: sample-project.intoto.jsonl
+  #     - name: Print the final result
+  #       shell: bash
+  #       run: |
+  #         ls -la
+  #         cat sample-project.intoto.jsonl | jq -r '.payload' | base64 -d | jq > sample-project.intoto.json
+  #     - name: Upload the final result
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: sample-project.intoto.json
+  #         path: sample-project.intoto.json
