@@ -1,5 +1,12 @@
 package main
 
+import (
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+)
+
 func main() {
-	println("Sample-Project-2 runs successfully")
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
+	log.Print("Sample-Project-2 runs successfully")
 }
