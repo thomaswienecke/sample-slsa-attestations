@@ -1,4 +1,4 @@
-name: Generate Attestation for sample-project-3
+name: sample-project-3
 on:
   push:
     branches:
