@@ -1,0 +1,16 @@
+project_name: sample-project-9
+builds:
+  - id: "binary"
+    binary: sample-project-9-{{ .Os }}-{{ .Arch }}
+    env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    no_unique_dist_dir: true
+
+archives:
+  - format: binary

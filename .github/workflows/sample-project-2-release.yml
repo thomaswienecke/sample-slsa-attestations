@@ -1,4 +1,4 @@
-name: Generate Atetstation for sample-project
+name: Generate Attestation for sample-project-2
 on:
   push:
     branches:
@@ -30,15 +30,15 @@ jobs:
           distribution: goreleaser
           version: "~> v1"
           args: release --clean --snapshot
-          workdir: sample-project
+          workdir: sample-project-2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: 'sample-project/dist/sample-project-*-*'
+          subject-path: 'sample-project-2/dist/sample-project-2-*-*'
       - name: Upload assets
         uses: actions/upload-artifact@v3
         with:
-          name: sample-project
-          path: sample-project/dist/*
+          name: sample-project-2
+          path: sample-project-2/dist/*

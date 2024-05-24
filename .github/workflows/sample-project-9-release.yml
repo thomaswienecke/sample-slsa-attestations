@@ -1,0 +1,44 @@
+name: Generate Attestation for sample-project-9
+on:
+  push:
+    branches:
+      - "*"
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: "~> v1"
+          args: release --clean --snapshot
+          workdir: sample-project-9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'sample-project-9/dist/sample-project-9-*-*'
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: sample-project-9
+          path: sample-project-9/dist/*
